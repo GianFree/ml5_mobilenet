@@ -1,37 +1,41 @@
 let mobilenet; // pre-trained classifier
+let video;
+let label='';
 
 function modelReady() {
   console.log("Model is ready!");
-  mobilenet.predict(puffin, gotResults);
+  mobilenet.predict(gotResults);
 }
 
 function gotResults(error, results) {
   if (error) {
     console.error(error);
   } else {
-    console.log(results);
-    let label = results[0].className;
-    let prob = results[0].probability;
-    //text(label, 10, height - 100);
-    createP(label);
-    createP(prob);
+    label = results[0].className;
+    mobilenet.predict(gotResults);
   }
 }
 
-function imageReady() {
-  image(puffin, 0, 0, width, height);
-}
+//function imageReady() {
+//  image(puffin, 0, 0, width, height);
+//}
 
 function setup() {
   // put setup code here
-  createCanvas(480, 360);
-  background(50);
-  puffin = createImg("imgs/puffin.jpeg", imageReady);
+  createCanvas(640, 550);
+  background(0);
+  video = createCapture(VIDEO);
 
-  puffin.hide();
-  mobilenet = ml5.imageClassifier("MobileNet", modelReady);
+  video.hide();
+  mobilenet = ml5.imageClassifier("MobileNet", video, modelReady);
 }
 
-//function draw() {     // put drawing code here
-//  background(50);
-//}
+function draw() {
+  // put drawing code here
+  background(0);
+  image(video, 0, 0);
+  fill(255);
+  textSize(30);
+  text(label, 10, height - 30);
+  //  background(50);
+}
